@@ -1,0 +1,11 @@
+#!/bin/bash
+
+args=("$@")
+
+echo "Im here. Args: ${args}"
+
+echo "ala ma kota :)"
+
+/opt/main
+
+exec ${args[@]}
