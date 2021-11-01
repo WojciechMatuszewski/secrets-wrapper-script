@@ -1,7 +1,7 @@
 import * as cdk from "@aws-cdk/core";
-import * as goLambda from "@aws-cdk/aws-lambda-go";
 import * as lambda from "@aws-cdk/aws-lambda";
 import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
+import * as nodeJsLambda from "@aws-cdk/aws-lambda-nodejs";
 
 import { join } from "path";
 
@@ -23,11 +23,9 @@ export class SecretsManagerEnvVariablesStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
 
-    const handler = new lambda.Function(this, "handler", {
-      code: lambda.Code.fromInline(
-        `exports.handler = () => {console.log("trying to read the environment variable", process.env.SECRET_VALUE)}`
-      ),
-      handler: "index.handler",
+    const handler = new nodeJsLambda.NodejsFunction(this, "handler", {
+      handler: "handler",
+      entry: join(__dirname, "./handler.ts"),
       runtime: lambda.Runtime.NODEJS_14_X,
       layers: [wrapperScriptLayer],
       environment: {

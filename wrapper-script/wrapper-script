@@ -15,8 +15,6 @@ if [[ ${last_cmd} -ne 0 ]]; then
     exit 1
 fi
 
-echo "The retrieved secret is ${secret_value}"
-
 export SECRET_VALUE="${secret_value}"
 
 exec ${args[@]}

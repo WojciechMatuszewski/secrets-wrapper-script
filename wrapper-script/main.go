@@ -13,7 +13,7 @@ import (
 func main() {
 	secretArn, found := os.LookupEnv("SECRET_ARN")
 	if !found {
-		panic("SECRET_ARN not foundss")
+		panic("SECRET_ARN not found")
 	}
 
 	cfg, err := config.LoadDefaultConfig(context.Background())
