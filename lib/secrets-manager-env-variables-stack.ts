@@ -25,14 +25,15 @@ export class SecretsManagerEnvVariablesStack extends cdk.Stack {
 
     const handler = new lambda.Function(this, "handler", {
       code: lambda.Code.fromInline(
-        `exports.handler = () => {console.log("from handler")}`
+        `exports.handler = () => {console.log("trying to read the environment variable", process.env.SECRET_VALUE)}`
       ),
       handler: "index.handler",
       runtime: lambda.Runtime.NODEJS_14_X,
       layers: [wrapperScriptLayer],
       environment: {
         AWS_LAMBDA_EXEC_WRAPPER: "/opt/wrapper-script",
-        SECRET_ARN: secret.secretArn
+        SECRET_ARN: secret.secretArn,
+        force: "ac"
       }
     });
 

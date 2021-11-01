@@ -10,7 +10,7 @@
     "test": "jest",
     "cdk": "cdk",
     "bootstrap": "npm run cdk bootstrap",
-    "build-layer:go": "CGO_ENABLED=0 GOOS=linux cd ./wrapper-script && go build -o ./main ./main.go && chmod +x main",
+    "build-layer:go": "cd ./wrapper-script && CGO_ENABLED=0 GOOS=linux go build -o ./main ./main.go && chmod +x main",
     "build-layer:script": "chmod +x ./wrapper-script/wrapper-script",
     "build-layer": "npm run build-layer:go && npm run build-layer:script",
     "deploy": "npm run build-layer && npm run cdk deploy"

@@ -25,6 +25,11 @@ As I compared this solution with having a middleware that does the same thing, I
 
   - Please note that **only the output from the script itself will be logged**. If your script invokes an executable, the logs from that executable will not be visible in the _CloudWatch Logs console_.
 
+  - To **view the _wrapper script_ logs use the _CloudWatch Logs_ console**. The `test` result logs do not include them – this might be confusing at first.
+
+- Make sure that the executable the _wrapper script_ is executing is compatible with the _AWS Lambda_ runtime the layer is targeting.
+  I believe that, in most cases, making sure the executable is linux-compatible will do.
+
 - Are wrapper scripts benefiting from the [increased power the "pre-handler" code is usually benefiting from](https://hichaelmart.medium.com/shave-99-93-off-your-lambda-bill-with-this-one-weird-trick-33c0acebb2ea)?
 
   - The article mentions the _init phase_. Since the _AWS Lambda extensions_ are executed in that phase, I think this is the case.

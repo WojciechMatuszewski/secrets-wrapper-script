@@ -1,11 +1,22 @@
 #!/bin/bash
 
+echo "Starting the wrapper script"
+
 args=("$@")
 
-echo "Im here. Args: ${args}"
+fullPath=$(dirname $(readlink -f $0))
 
-echo "ala ma kota :)"
+secret_value=$(${fullPath}/main)
+last_cmd=$?
 
-/opt/main
+# Verify that the last command was successful
+if [[ ${last_cmd} -ne 0 ]]; then
+    echo "Failed to setup environment secrets"
+    exit 1
+fi
+
+echo "The retrieved secret is ${secret_value}"
+
+export SECRET_VALUE="${secret_value}"
 
 exec ${args[@]}
