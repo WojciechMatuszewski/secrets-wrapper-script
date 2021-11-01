@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -16,7 +17,12 @@ type Handler func(ctx context.Context) error
 
 func NewHandler() Handler {
 	return func(ctx context.Context) error {
-		fmt.Println("Inside the handler")
+		secretValue, found := os.LookupEnv("SECRET_VALUE")
+		if !found {
+			panic("SECRET_VALUE not found")
+		}
+
+		fmt.Println("Secret value is", secretValue)
 		return nil
 	}
 }

@@ -1,17 +1,36 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"net/http"
-	"time"
+	"os"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 )
 
 func main() {
-	fmt.Println("Hi im here")
-	time.Sleep(time.Second * 1)
-	_, err := http.Get("https://webhook.site/52c58358-59fc-4cb7-a7d7-465024004ac2")
+	secretArn, found := os.LookupEnv("SECRET_ARN")
+	if !found {
+		panic("SECRET_ARN not foundss")
+	}
+
+	cfg, err := config.LoadDefaultConfig(context.Background())
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("After sleep")
+
+	smanager := secretsmanager.NewFromConfig(cfg)
+	out, err := smanager.GetSecretValue(
+		context.Background(),
+		&secretsmanager.GetSecretValueInput{
+			SecretId: aws.String(secretArn),
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(*out.SecretString)
 }

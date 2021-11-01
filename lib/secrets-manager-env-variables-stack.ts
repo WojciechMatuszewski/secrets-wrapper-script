@@ -1,6 +1,8 @@
 import * as cdk from "@aws-cdk/core";
 import * as goLambda from "@aws-cdk/aws-lambda-go";
 import * as lambda from "@aws-cdk/aws-lambda";
+import * as secretsmanager from "@aws-cdk/aws-secretsmanager";
+
 import { join } from "path";
 
 export class SecretsManagerEnvVariablesStack extends cdk.Stack {
@@ -15,7 +17,13 @@ export class SecretsManagerEnvVariablesStack extends cdk.Stack {
         compatibleArchitectures: [lambda.Architecture.X86_64]
       }
     );
-    const handler = new lambda.Function(this, "Handler2", {
+
+    const secret = new secretsmanager.Secret(this, "secret", {
+      secretName: "favorite_color",
+      removalPolicy: cdk.RemovalPolicy.DESTROY
+    });
+
+    const handler = new lambda.Function(this, "handler", {
       code: lambda.Code.fromInline(
         `exports.handler = () => {console.log("from handler")}`
       ),
@@ -23,12 +31,11 @@ export class SecretsManagerEnvVariablesStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_14_X,
       layers: [wrapperScriptLayer],
       environment: {
-        AWS_LAMBDA_EXEC_WRAPPER: "/opt/wrapper-script"
+        AWS_LAMBDA_EXEC_WRAPPER: "/opt/wrapper-script",
+        SECRET_ARN: secret.secretArn
       }
     });
-    // const handler = new goLambda.GoFunction(this, "Handler", {
-    //   entry: join(__dirname, "./handler"),
-    //   layers: [wrapperScriptLayer],
-    // });
+
+    secret.grantRead(handler);
   }
 }
